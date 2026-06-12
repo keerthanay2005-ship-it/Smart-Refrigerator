@@ -1266,9 +1266,9 @@ let supabaseClient = null;
 
 function getSupabaseClient() {
     if (supabaseClient) return supabaseClient;
-    const url = localStorage.getItem('supabaseUrl');
-    const key = localStorage.getItem('supabaseKey');
-    const enabled = localStorage.getItem('supabaseEnabled') === 'true';
+    const url = localStorage.getItem('supabaseUrl') || 'https://drzoyuxfvzxkstrrjxes.supabase.co';
+    const key = localStorage.getItem('supabaseKey') || 'sb_publishable_YBu9s8jf7R-4y3K4mQ57CQ_jfFqQ2Zu';
+    const enabled = localStorage.getItem('supabaseEnabled') !== 'false';
     if (enabled && url && key) {
         try {
             supabaseClient = supabase.createClient(url, key);
@@ -1281,7 +1281,7 @@ function getSupabaseClient() {
 
 const SupabaseAdapter = {
     isEnabled: function() {
-        return localStorage.getItem('supabaseEnabled') === 'true' && !!getSupabaseClient();
+        return localStorage.getItem('supabaseEnabled') !== 'false' && !!getSupabaseClient();
     },
     
     getItems: async function() {
@@ -1413,9 +1413,11 @@ function loadSupabaseConfig() {
     const keyInput = document.getElementById('supabaseKey');
     const enabledInput = document.getElementById('enableSupabase');
     
-    if (urlInput) urlInput.value = localStorage.getItem('supabaseUrl') || '';
-    if (keyInput) keyInput.value = localStorage.getItem('supabaseKey') || '';
-    if (enabledInput) enabledInput.checked = localStorage.getItem('supabaseEnabled') === 'true';
+    if (urlInput) urlInput.value = localStorage.getItem('supabaseUrl') || 'https://drzoyuxfvzxkstrrjxes.supabase.co';
+    if (keyInput) keyInput.value = localStorage.getItem('supabaseKey') || 'sb_publishable_YBu9s8jf7R-4y3K4mQ57CQ_jfFqQ2Zu';
+    if (enabledInput) {
+        enabledInput.checked = localStorage.getItem('supabaseEnabled') !== 'false';
+    }
     
     if (Notification.permission === 'granted') {
         const btn = document.getElementById('btnRequestNotification');
