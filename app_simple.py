@@ -405,4 +405,4 @@ def send_expiry_alerts():
 if __name__ == '__main__':
     print("Starting Smart Fridge AI Demo Server...")
     print("Open your browser to: http://localhost:5000")
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)
