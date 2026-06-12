@@ -175,6 +175,121 @@ def delete_supabase_item(user_id, item_id):
         print(f"Supabase delete exception: {e}")
         return False
 
+# Supabase Users & Notifications Helpers
+def register_supabase_user(username, email, password_hash, household):
+    check_url = f"{SUPABASE_URL}/rest/v1/profiles?email=eq.{email}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    try:
+        res = requests.get(check_url, headers=headers)
+        if res.status_code == 200 and len(res.json()) > 0:
+            return {"error": "Email already exists"}
+            
+        insert_url = f"{SUPABASE_URL}/rest/v1/profiles"
+        post_headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+        }
+        payload = {
+            "username": username,
+            "email": email,
+            "password_hash": password_hash,
+            "household": household,
+            "preferences": "{}"
+        }
+        res_post = requests.post(insert_url, headers=post_headers, json=payload)
+        if res_post.status_code in [200, 201]:
+            return res_post.json()[0]
+        else:
+            error_msg = f"Failed to create user in Supabase: {res_post.status_code} - {res_post.text}"
+            print(f"Supabase user insert error: {error_msg}")
+            return {"error": error_msg}
+    except Exception as e:
+        error_msg = f"Supabase register exception: {str(e)}"
+        print(error_msg)
+        return {"error": error_msg}
+
+def login_supabase_user(email, password):
+    url = f"{SUPABASE_URL}/rest/v1/profiles?email=eq.{email}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    try:
+        res = requests.get(url, headers=headers)
+        if res.status_code == 200 and len(res.json()) > 0:
+            user = res.json()[0]
+            if check_password_hash(user['password_hash'], password):
+                return user
+        return None
+    except Exception as e:
+        print(f"Supabase login exception: {e}")
+        return None
+
+def get_supabase_notifications(user_id):
+    url = f"{SUPABASE_URL}/rest/v1/notifications?user_id=eq.{user_id}&order=created_at.desc"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    try:
+        res = requests.get(url, headers=headers)
+        if res.status_code == 200:
+            return res.json()
+        return []
+    except Exception as e:
+        print(f"Supabase notifications fetch error: {e}")
+        return []
+
+def add_supabase_notification(user_id, title, message, notification_type='info'):
+    url = f"{SUPABASE_URL}/rest/v1/notifications"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "user_id": str(user_id),
+        "title": title,
+        "message": message,
+        "type": notification_type,
+        "is_read": False
+    }
+    try:
+        res = requests.post(url, headers=headers, json=payload)
+        if res.status_code not in [200, 201]:
+            print(f"Supabase notification insert error: {res.status_code} {res.text}")
+    except Exception as e:
+        print(f"Supabase notification insert exception: {e}")
+
+def create_notification(user_id, title, message, notification_type='info'):
+    if DB_BACKEND == 'supabase':
+        add_supabase_notification(user_id, title, message, notification_type)
+    elif DB_BACKEND == 'sqlite':
+        try:
+            conn = get_sqlite_conn()
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO notifications (user_id, title, message, type)
+                VALUES (?, ?, ?, ?)
+            ''', (user_id, title, message, notification_type))
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print(f"SQLite notification insert error: {e}")
+    else:
+        mock_notifications.append({
+            "user_id": user_id,
+            "title": title,
+            "message": message,
+            "type": notification_type,
+            "created_at": datetime.now().isoformat()
+        })
+
 # Initialize MongoDB if selected
 if DB_BACKEND == 'mongodb':
     app.config["MONGO_URI"] = os.getenv("MONGO_URI", "mongodb://localhost:27017/smartfridge")
@@ -369,6 +484,12 @@ def register():
         except sqlite3.IntegrityError:
             return jsonify({"error": "Email or username already exists"}), 400
 
+    elif DB_BACKEND == 'supabase':
+        res = register_supabase_user(data['username'], data['email'], hashed_password, data.get('household', ''))
+        if "error" in res:
+            return jsonify({"error": res["error"]}), 400
+        return jsonify({"message": "User registered successfully"})
+
     else: # mock
         if data['email'] in [u['email'] for u in mock_users.values()]:
             return jsonify({"error": "Email already exists"}), 400
@@ -408,6 +529,16 @@ def login():
             return jsonify({
                 "token": "sqlite-token",
                 "user": {"id": user['id'], "username": user['username'], "email": user['email']}
+            })
+
+    elif DB_BACKEND == 'supabase':
+        user = login_supabase_user(data['email'], data['password'])
+        if user:
+            session['user_id'] = str(user['id'])
+            session['username'] = user['username']
+            return jsonify({
+                "token": "supabase-token",
+                "user": {"id": str(user['id']), "username": user['username'], "email": user['email']}
             })
 
     else: # mock
@@ -498,6 +629,7 @@ def add_food():
     days_left = (expiry - datetime.today()).days
     priority_score = calculate_priority_score({"days_left": days_left, "quantity": data['quantity']})
     
+    item_id = None
     if DB_BACKEND == 'mongodb':
         food_item = {
             "user_id": user_id,
@@ -515,7 +647,7 @@ def add_food():
             "updated_at": datetime.now()
         }
         res = mongo.db.food.insert_one(food_item)
-        return jsonify({"message": "Item Added", "item_id": str(res.inserted_id), "priority_score": priority_score})
+        item_id = str(res.inserted_id)
 
     elif DB_BACKEND == 'sqlite':
         try:
@@ -528,7 +660,6 @@ def add_food():
             item_id = cursor.lastrowid
             conn.commit()
             conn.close()
-            return jsonify({"message": "Item Added", "item_id": item_id, "priority_score": priority_score})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
@@ -544,7 +675,7 @@ def add_food():
             "priority_score": priority_score
         })
         if ret:
-            return jsonify({"message": "Item Added", "item_id": ret['id'], "priority_score": priority_score})
+            item_id = ret['id']
         else:
             return jsonify({"error": "Failed to add item to Supabase"}), 500
 
@@ -563,7 +694,9 @@ def add_food():
             "priority_score": priority_score
         }
         mock_inventory.append(mock_item)
-        return jsonify({"message": "Item Added", "item_id": item_id, "priority_score": priority_score})
+
+    create_notification(user_id, "Item Added", f"'{data['name']}' has been added to storage location: {data.get('storage_location', 'Shelf')}.", "info")
+    return jsonify({"message": "Item Added", "item_id": item_id, "priority_score": priority_score})
 
 @app.route('/items')
 def get_items():
@@ -627,6 +760,7 @@ def update_item(item_id):
         
     priority_score = calculate_priority_score({"days_left": days_left, "quantity": data['quantity']})
     
+    success = False
     if DB_BACKEND == 'mongodb':
         update_data = {
             "name": data['name'],
@@ -640,7 +774,7 @@ def update_item(item_id):
             "updated_at": datetime.now()
         }
         mongo.db.food.update_one({"_id": ObjectId(item_id), "user_id": user_id}, {"$set": update_data})
-        return jsonify({"message": "Item updated"})
+        success = True
         
     elif DB_BACKEND == 'sqlite':
         try:
@@ -653,7 +787,7 @@ def update_item(item_id):
             ''', (data['name'], data['category'], float(data['quantity']), data.get('quantity_unit', 'pieces'), data.get('storage_location', 'Shelf'), data['expiry'], days_left, priority_score, user_id, int(item_id)))
             conn.commit()
             conn.close()
-            return jsonify({"message": "Item updated"})
+            success = True
         except Exception as e:
             return jsonify({"error": str(e)}), 500
             
@@ -668,10 +802,6 @@ def update_item(item_id):
             "days_left": days_left,
             "priority_score": priority_score
         })
-        if success:
-            return jsonify({"message": "Item updated"})
-        else:
-            return jsonify({"error": "Failed to update item in Supabase"}), 500
             
     else: # mock
         for item in mock_inventory:
@@ -684,9 +814,14 @@ def update_item(item_id):
                 item['expiry_date'] = data['expiry']
                 item['days_left'] = days_left
                 item['priority_score'] = priority_score
-                return jsonify({"message": "Item updated"})
+                success = True
+                break
                 
-        return jsonify({"error": "Item not found"}), 404
+    if success:
+        create_notification(user_id, "Item Updated", f"'{data['name']}' has been updated successfully.", "info")
+        return jsonify({"message": "Item updated"})
+    else:
+        return jsonify({"error": "Failed to update item"}), 500
 
 @app.route('/delete/<item_id>', methods=['DELETE'])
 def delete_item(item_id):
@@ -694,9 +829,10 @@ def delete_item(item_id):
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
         
+    success = False
     if DB_BACKEND == 'mongodb':
         mongo.db.food.delete_one({"_id": ObjectId(item_id), "user_id": user_id})
-        return jsonify({"message": "Deleted"})
+        success = True
         
     elif DB_BACKEND == 'sqlite':
         try:
@@ -705,21 +841,23 @@ def delete_item(item_id):
             cursor.execute('DELETE FROM food_items WHERE user_id = ? AND id = ?', (user_id, int(item_id)))
             conn.commit()
             conn.close()
-            return jsonify({"message": "Deleted"})
+            success = True
         except Exception as e:
             return jsonify({"error": str(e)}), 500
             
     elif DB_BACKEND == 'supabase':
         success = delete_supabase_item(user_id, item_id)
-        if success:
-            return jsonify({"message": "Deleted"})
-        else:
-            return jsonify({"error": "Failed to delete item from Supabase"}), 500
             
     else: # mock
         global mock_inventory
         mock_inventory = [i for i in mock_inventory if not (i['id'] == item_id and i['user_id'] == user_id)]
+        success = True
+        
+    if success:
+        create_notification(user_id, "Item Deleted", "An item was removed from the inventory.", "info")
         return jsonify({"message": "Deleted"})
+    else:
+        return jsonify({"error": "Failed to delete item"}), 500
 
 # ---------------------------------------------------------
 # Expiry & Alerts Endpoint
@@ -784,6 +922,62 @@ def get_alerts():
         "expiring_soon": expiring_soon,
         "low_stock": low_stock
     })
+
+# In-memory notifications store for mock backend
+mock_notifications = []
+
+@app.route('/api/notifications', methods=['GET', 'POST'])
+def get_or_post_notifications():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    if request.method == 'POST':
+        data = request.json
+        title = data.get('title', 'Smart Alert')
+        message = data.get('message', '')
+        type_ = data.get('type', 'info')
+        
+        if DB_BACKEND == 'supabase':
+            add_supabase_notification(user_id, title, message, type_)
+        elif DB_BACKEND == 'sqlite':
+            try:
+                conn = get_sqlite_conn()
+                cursor = conn.cursor()
+                cursor.execute('''
+                    INSERT INTO notifications (user_id, title, message, type)
+                    VALUES (?, ?, ?, ?)
+                ''', (user_id, title, message, type_))
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                print(f"SQLite notification insert error: {e}")
+        else:
+            mock_notifications.append({
+                "user_id": user_id,
+                "title": title,
+                "message": message,
+                "type": type_,
+                "created_at": datetime.now().isoformat()
+            })
+        return jsonify({"message": "Notification added"})
+        
+    # GET method
+    notifications_list = []
+    if DB_BACKEND == 'supabase':
+        notifications_list = get_supabase_notifications(user_id)
+    elif DB_BACKEND == 'sqlite':
+        try:
+            conn = get_sqlite_conn()
+            db_notifs = conn.execute('SELECT * FROM notifications WHERE user_id = ? ORDER BY id DESC LIMIT 50', (user_id,)).fetchall()
+            conn.close()
+            notifications_list = [dict(n) for n in db_notifs]
+        except Exception as e:
+            print(f"SQLite notification fetch error: {e}")
+    else:
+        notifications_list = [n for n in mock_notifications if n['user_id'] == user_id]
+        
+    return jsonify(notifications_list)
 
 # ---------------------------------------------------------
 # ML and Analytics Endpoints

@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -20,7 +20,7 @@
             </a>
             <div class="navbar-nav ms-auto">
                 <button class="btn btn-primary" id="loginBtn" onclick="showLogin()">
-                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                    <i class="fas fa-sign-in-alt me-1"></i>Login / Sign Up
                 </button>
                 <button class="btn btn-primary d-none" id="logoutBtn" onclick="logout()">
                     <i class="fas fa-sign-out-alt me-1"></i>Logout
@@ -34,11 +34,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Login / Register</h5>
+                    <h5 class="modal-title"><i class="fas fa-user-shield me-2 text-primary"></i>Authentication Hub</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ul class="nav nav-tabs" id="authTabs">
+                    <ul class="nav nav-tabs mb-3" id="authTabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#login">Login</a>
                         </li>
@@ -50,40 +50,61 @@
                         <div class="tab-pane fade show active" id="login">
                             <form id="loginForm">
                                 <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="loginEmail" required>
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="loginEmail" placeholder="yourname@example.com" required>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="loginPassword" required>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-key"></i></span>
+                                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Sign In</button>
                             </form>
                         </div>
                         <div class="tab-pane fade" id="register">
                             <form id="registerForm">
                                 <div class="mb-3">
                                     <label class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="registerUsername" required>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="registerUsername" placeholder="e.g. JohnDoe" required>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="registerEmail" required>
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="registerEmail" placeholder="name@domain.com" required>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="registerPassword" required>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-key"></i></span>
+                                        <input type="password" class="form-control" id="registerPassword" placeholder="Min. 8 characters" required>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Phone Number (for SMS alerts) *</label>
-                                    <input type="tel" class="form-control" id="registerPhone" placeholder="+919876543210" required>
-                                    <small class="text-muted">Include country code (+91 for India) for SMS notifications</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-mobile-alt"></i></span>
+                                        <input type="tel" class="form-control" id="registerPhone" placeholder="+919876543210" required>
+                                    </div>
+                                    <small class="form-text text-muted">Include country code (+91 for India) for SMS notifications</small>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Household (Optional)</label>
-                                    <input type="text" class="form-control" id="registerHousehold">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-home"></i></span>
+                                        <input type="text" class="form-control" id="registerHousehold" placeholder="e.g. Apartment 4B">
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Register</button>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Create Account</button>
                             </form>
                         </div>
                     </div>
@@ -109,19 +130,30 @@
                                 <div class="smart-screen" onclick="event.stopPropagation();">
                                     <div class="screen-header d-flex justify-content-between align-items-center mb-1">
                                         <span class="screen-time" id="screenTime">12:00 PM</span>
-                                        <span class="screen-weather small"><i class="fas fa-snowflake text-info me-1"></i>4°C</span>
+                                        <span class="screen-weather small"><i class="fas fa-cloud-sun text-warning me-1"></i>16°C</span>
                                     </div>
                                     <div class="screen-body">
-                                        <div class="screen-title mb-1">FAMILY HUB</div>
+                                        <div class="screen-title mb-1"><i class="fas fa-house-laptop me-1"></i>FAMILY HUB</div>
                                         <div class="screen-notifications" id="screenNotifications">
                                             <div class="text-white-50 small" style="font-size: 0.75rem;">Initializing Smart Hub...</div>
                                         </div>
+                                        
+                                        <!-- Notes Widget -->
+                                        <div class="mt-2 p-1 rounded" style="background: rgba(255,255,255,0.03); font-size: 0.6rem; border: 1px solid rgba(255,255,255,0.05);">
+                                            <i class="fas fa-sticky-note text-warning me-1"></i><strong>Kitchen Memo:</strong> Buy fresh avocados!
+                                        </div>
+                                        
+                                        <!-- Music Widget -->
+                                        <div class="mt-2 p-1 rounded d-flex align-items-center" style="background: rgba(255,255,255,0.03); font-size: 0.6rem; border: 1px solid rgba(255,255,255,0.05);">
+                                            <i class="fas fa-music text-info me-2"></i>
+                                            <marquee scrollamount="2" class="flex-grow-1" style="font-size: 0.6rem;">Now Streaming: Cooking Classics Playlist</marquee>
+                                        </div>
                                     </div>
                                     <div class="screen-footer d-flex justify-content-between align-items-center mt-2">
-                                        <button class="btn btn-sm btn-light py-0 px-2" style="font-size: 0.7rem; font-weight: bold; color: #3e2723 !important;" onclick="toggleDoors(event)">
+                                        <button class="btn btn-sm btn-light py-0 px-2" style="font-size: 0.7rem; font-weight: bold; color: #0f172a !important; background: var(--primary-color) !important; border: none;" onclick="toggleDoors(event)">
                                             <i class="fas fa-door-open me-1"></i>OPEN DOOR
                                         </button>
-                                        <small class="text-white-50" style="font-size: 0.6rem;">Eco Mode</small>
+                                        <small class="text-white-50" style="font-size: 0.6rem;"><i class="fas fa-leaf text-success me-1"></i>Eco Mode</small>
                                     </div>
                                 </div>
                             </div>
@@ -140,7 +172,7 @@
                                 
                                 <!-- 1. Freezer Shelf (Top) -->
                                 <div class="fridge-shelf-container" data-location="Freezer">
-                                    <div class="shelf-label">Freezer</div>
+                                    <div class="shelf-label"><i class="fas fa-snowflake me-1"></i>Freezer</div>
                                     <div class="shelf-items" id="shelf-Freezer">
                                         <!-- Items will be injected here -->
                                     </div>
@@ -149,7 +181,7 @@
                                 
                                 <!-- 2. Upper Refrigerator Shelf -->
                                 <div class="fridge-shelf-container" data-location="Shelf">
-                                    <div class="shelf-label">Shelves</div>
+                                    <div class="shelf-label"><i class="fas fa-layer-group me-1"></i>Shelves</div>
                                     <div class="shelf-items" id="shelf-Shelf">
                                         <!-- Items will be injected here -->
                                     </div>
@@ -158,7 +190,7 @@
                                 
                                 <!-- 3. Refrigerator Door shelves -->
                                 <div class="fridge-shelf-container" data-location="Door">
-                                    <div class="shelf-label">Door Shelves</div>
+                                    <div class="shelf-label"><i class="fas fa-door-closed me-1"></i>Door</div>
                                     <div class="shelf-items" id="shelf-Door">
                                         <!-- Items will be injected here -->
                                     </div>
@@ -167,7 +199,7 @@
                                 
                                 <!-- 4. Crisper Drawer (Bottom) -->
                                 <div class="fridge-shelf-container" data-location="Drawer">
-                                    <div class="shelf-label">Crisper Drawer</div>
+                                    <div class="shelf-label"><i class="fas fa-seedling me-1"></i>Crisper Drawer</div>
                                     <div class="shelf-items" id="shelf-Drawer">
                                         <!-- Items will be injected here -->
                                     </div>
@@ -186,439 +218,454 @@
                 <!-- Right Column: Control Panel & Tabs -->
                 <div class="col-lg-8 col-md-7">
                     <!-- Quick Stats -->
-                    <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="totalItems">0</h4>
-                                    <p class="mb-0">Total Items</p>
-                                </div>
-                                <i class="fas fa-box fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="expiringSoon">0</h4>
-                                    <p class="mb-0">Expiring Soon</p>
-                                </div>
-                                <i class="fas fa-clock fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="lowStock">0</h4>
-                                    <p class="mb-0">Low Stock</p>
-                                </div>
-                                <i class="fas fa-exclamation-triangle fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="expired">0</h4>
-                                    <p class="mb-0">Expired</p>
-                                </div>
-                                <i class="fas fa-trash fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation Tabs -->
-            <ul class="nav nav-tabs mb-4" id="mainTabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#inventory">
-                        <i class="fas fa-list me-1"></i>Inventory
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#priority">
-                        <i class="fas fa-sort-amount-down me-1"></i>Priority Queue
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#freshness">
-                        <i class="fas fa-camera me-1"></i>Freshness Detection
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#analytics">
-                        <i class="fas fa-chart-bar me-1"></i>Analytics
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#heatmap">
-                        <i class="fas fa-th me-1"></i>Risk Heatmap
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#ml">
-                        <i class="fas fa-brain me-1"></i>ML Predictions
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#settings">
-                        <i class="fas fa-cog me-1"></i>Settings & Supabase
-                    </a>
-                </li>
-            </ul>
-
-            <!-- Tab Content -->
-            <div class="tab-content">
-                <!-- Inventory Tab -->
-                <div class="tab-pane fade show active" id="inventory">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-plus me-2"></i>Add Food Item</h5>
-                                </div>
+                    <div class="row mb-4 g-3">
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
                                 <div class="card-body">
-                                    <form id="addFoodForm">
-                                        <div class="mb-3">
-                                            <label class="form-label">Food Name</label>
-                                            <input type="text" class="form-control" id="foodName" required>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="totalItems">0</h4>
+                                            <p class="mb-0 small">Total Items</p>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Category</label>
-                                            <select class="form-control" id="foodCategory" required>
-                                                <option value="">Select Category</option>
-                                                <option value="Fruits">Fruits</option>
-                                                <option value="Vegetables">Vegetables</option>
-                                                <option value="Dairy">Dairy</option>
-                                                <option value="Packaged">Packaged</option>
-                                                <option value="Meat">Meat</option>
-                                                <option value="Other">Other</option>
-                                            </select>
+                                        <i class="fas fa-box fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="expiringSoon">0</h4>
+                                            <p class="mb-0 small">Expiring Soon</p>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Quantity</label>
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control" id="foodQuantity" min="0" step="0.1" required>
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="lowStock">0</h4>
+                                            <p class="mb-0 small">Low Stock</p>
+                                        </div>
+                                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="expired">0</h4>
+                                            <p class="mb-0 small">Expired Items</p>
+                                        </div>
+                                        <i class="fas fa-trash fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <ul class="nav nav-tabs mb-4" id="mainTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#inventory">
+                                <i class="fas fa-list me-1"></i>Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#priority">
+                                <i class="fas fa-sort-amount-down me-1"></i>Priority Queue
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#freshness">
+                                <i class="fas fa-camera me-1"></i>Freshness Detection
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#analytics">
+                                <i class="fas fa-chart-bar me-1"></i>Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#heatmap">
+                                <i class="fas fa-th me-1"></i>Risk Heatmap
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#ml">
+                                <i class="fas fa-brain me-1"></i>ML Predictions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#settings">
+                                <i class="fas fa-cog me-1"></i>Settings & Supabase
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content">
+                        <!-- Inventory Tab -->
+                        <div class="tab-pane fade show active" id="inventory">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5><i class="fas fa-plus me-2 text-primary"></i>Add Food Item</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form id="addFoodForm">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Food Name</label>
+                                                    <input type="text" class="form-control" id="foodName" placeholder="e.g. Milk, Apples" required>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <select class="form-control" id="quantityUnit">
-                                                        <option value="pieces">Pieces</option>
-                                                        <option value="kg">Kilograms</option>
-                                                        <option value="g">Grams</option>
-                                                        <option value="lb">Pounds</option>
-                                                        <option value="oz">Ounces</option>
-                                                        <option value="liters">Liters</option>
-                                                        <option value="ml">Milliliters</option>
-                                                        <option value="cups">Cups</option>
-                                                        <option value="dozen">Dozen</option>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Category</label>
+                                                    <select class="form-control" id="foodCategory" required>
+                                                        <option value="">Select Category</option>
+                                                        <option value="Fruits">Fruits</option>
+                                                        <option value="Vegetables">Vegetables</option>
+                                                        <option value="Dairy">Dairy</option>
+                                                        <option value="Packaged">Packaged</option>
+                                                        <option value="Meat">Meat</option>
+                                                        <option value="Other">Other</option>
                                                     </select>
                                                 </div>
-                                            </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Quantity</label>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-7">
+                                                            <input type="number" class="form-control" id="foodQuantity" min="0" step="0.1" placeholder="e.g. 2.0" required>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <select class="form-control" id="quantityUnit">
+                                                                <option value="pieces">Pieces</option>
+                                                                <option value="kg">Kilograms</option>
+                                                                <option value="g">Grams</option>
+                                                                <option value="lb">Pounds</option>
+                                                                <option value="oz">Ounces</option>
+                                                                <option value="liters">Liters</option>
+                                                                <option value="ml">Milliliters</option>
+                                                                <option value="cups">Cups</option>
+                                                                <option value="dozen">Dozen</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Storage Location</label>
+                                                    <select class="form-control" id="storageLocation">
+                                                        <option value="Shelf">Shelf</option>
+                                                        <option value="Drawer">Drawer</option>
+                                                        <option value="Freezer">Freezer</option>
+                                                        <option value="Door">Door</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3" id="ripenessField" style="display: none;">
+                                                    <label class="form-label">Ripeness</label>
+                                                    <select class="form-control" id="ripeness">
+                                                        <option value="">Select ripeness</option>
+                                                        <option value="raw">Raw</option>
+                                                        <option value="ripe">Ripe</option>
+                                                        <option value="overripe">Overripe</option>
+                                                        <option value="unripe">Unripe</option>
+                                                    </select>
+                                                    <small class="form-text text-muted">Helps determine consumption priority</small>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="hasExpiryDate" checked>
+                                                        <label class="form-check-label" for="hasExpiryDate">
+                                                            I know the expiry date
+                                                        </label>
+                                                    </div>
+                                                    <div id="expiryDateField">
+                                                        <label class="form-label">Expiry Date</label>
+                                                        <input type="date" class="form-control" id="foodExpiry" required>
+                                                        <small class="form-text text-muted">Estimate spoilage date for fresh items</small>
+                                                    </div>
+                                                    <div id="noExpiryField" class="d-none">
+                                                        <label class="form-label">Estimated Freshness</label>
+                                                        <select class="form-control" id="estimatedFreshness">
+                                                            <option value="">Select freshness duration</option>
+                                                            <option value="3">Very Fresh (3+ days)</option>
+                                                            <option value="7">Fresh (about 1 week)</option>
+                                                            <option value="14">Moderately Fresh (2 weeks)</option>
+                                                            <option value="30">Long-lasting (1 month)</option>
+                                                        </select>
+                                                        <small class="form-text text-muted">We'll use this for priority calculations</small>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-plus me-1"></i>Add to Fridge
+                                                </button>
+                                            </form>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Storage Location</label>
-                                            <select class="form-control" id="storageLocation">
-                                                <option value="Shelf">Shelf</option>
-                                                <option value="Drawer">Drawer</option>
-                                                <option value="Freezer">Freezer</option>
-                                                <option value="Door">Door</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3" id="ripenessField" style="display: none;">
-                                            <label class="form-label">Ripeness</label>
-                                            <select class="form-control" id="ripeness">
-                                                <option value="">Select ripeness</option>
-                                                <option value="raw">Raw</option>
-                                                <option value="ripe">Ripe</option>
-                                                <option value="overripe">Overripe</option>
-                                                <option value="unripe">Unripe</option>
-                                            </select>
-                                            <small class="form-text text-muted">Helps determine consumption priority</small>
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="checkbox" id="hasExpiryDate" checked>
-                                                <label class="form-check-label" for="hasExpiryDate">
-                                                    I know the expiry date
-                                                </label>
-                                            </div>
-                                            <div id="expiryDateField">
-                                                <label class="form-label">Expiry Date</label>
-                                                <input type="date" class="form-control" id="foodExpiry" required>
-                                                <small class="form-text text-muted">For fresh produce, estimate when it might spoil</small>
-                                            </div>
-                                            <div id="noExpiryField" class="d-none">
-                                                <label class="form-label">Estimated Freshness</label>
-                                                <select class="form-control" id="estimatedFreshness">
-                                                    <option value="">Select freshness duration</option>
-                                                    <option value="3">Very Fresh (3+ days)</option>
-                                                    <option value="7">Fresh (about 1 week)</option>
-                                                    <option value="14">Moderately Fresh (2 weeks)</option>
-                                                    <option value="30">Long-lasting (1 month)</option>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5><i class="fas fa-list me-2 text-primary"></i>Food Inventory</h5>
+                                            <div class="d-flex gap-2">
+                                                <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search items...">
+                                                <select class="form-control form-control-sm" id="filterCategory">
+                                                    <option value="">All Categories</option>
+                                                    <option value="Fruits">Fruits</option>
+                                                    <option value="Vegetables">Vegetables</option>
+                                                    <option value="Dairy">Dairy</option>
+                                                    <option value="Packaged">Packaged</option>
+                                                    <option value="Meat">Meat</option>
+                                                    <option value="Other">Other</option>
                                                 </select>
-                                                <small class="form-text text-muted">We'll use this for priority calculations</small>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fas fa-plus me-1"></i>Add Item
-                                        </button>
-                                    </form>
+                                        <div class="card-body">
+                                            <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+                                                <table class="table table-hover" id="inventoryTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Category</th>
+                                                            <th>Quantity</th>
+                                                            <th>Location</th>
+                                                            <th>Expiry</th>
+                                                            <th>Days Left</th>
+                                                            <th>Risk</th>
+                                                            <th>Priority</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="inventoryBody">
+                                                        <!-- Items will be loaded here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-8">
+
+                        <!-- Priority Queue Tab -->
+                        <div class="tab-pane fade" id="priority">
                             <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5><i class="fas fa-list me-2"></i>Food Inventory</h5>
-                                    <div class="d-flex gap-2">
-                                        <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search items...">
-                                        <select class="form-control form-control-sm" id="filterCategory">
-                                            <option value="">All Categories</option>
-                                            <option value="Fruits">Fruits</option>
-                                            <option value="Vegetables">Vegetables</option>
-                                            <option value="Dairy">Dairy</option>
-                                            <option value="Packaged">Packaged</option>
-                                            <option value="Meat">Meat</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </div>
+                                <div class="card-header">
+                                    <h5><i class="fas fa-sort-amount-down me-2 text-primary"></i>Smart Consumption Priority Queue</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" id="inventoryTable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Category</th>
-                                                    <th>Quantity</th>
-                                                    <th>Location</th>
-                                                    <th>Expiry</th>
-                                                    <th>Days Left</th>
-                                                    <th>Risk</th>
-                                                    <th>Priority</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="inventoryBody">
-                                                <!-- Items will be loaded here -->
-                                            </tbody>
-                                        </table>
+                                    <div id="priorityQueue">
+                                        <!-- Priority items will be loaded here -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Priority Queue Tab -->
-                <div class="tab-pane fade" id="priority">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-sort-amount-down me-2"></i>Smart Consumption Priority Queue</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="priorityQueue">
-                                <!-- Priority items will be loaded here -->
+                        <!-- Freshness Detection Tab -->
+                        <div class="tab-pane fade" id="freshness">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-camera me-2 text-primary"></i>Freshness Detection</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Upload Image or Use Camera</label>
+                                                <input type="file" class="form-control" id="imageUpload" accept="image/*">
+                                                <button class="btn btn-secondary mt-2" onclick="startCamera()">
+                                                    <i class="fas fa-camera me-1"></i>Use Camera
+                                                </button>
+                                            </div>
+                                            <div id="imagePreview" class="mb-3 text-center"></div>
+                                            <button class="btn btn-primary w-100" onclick="detectFreshness()">
+                                                <i class="fas fa-search me-1"></i>Analyze Freshness
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div id="freshnessResult">
+                                                <!-- Freshness results will be shown here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Freshness Detection Tab -->
-                <div class="tab-pane fade" id="freshness">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-camera me-2"></i>Freshness Detection</h5>
-                        </div>
-                        <div class="card-body">
+                        <!-- Analytics Tab -->
+                        <div class="tab-pane fade" id="analytics">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Upload Image or Use Camera</label>
-                                        <input type="file" class="form-control" id="imageUpload" accept="image/*">
-                                        <button class="btn btn-secondary mt-2" onclick="startCamera()">
-                                            <i class="fas fa-camera me-1"></i>Use Camera
-                                        </button>
-                                    </div>
-                                    <div id="imagePreview" class="mb-3"></div>
-                                    <button class="btn btn-primary" onclick="detectFreshness()">
-                                        <i class="fas fa-search me-1"></i>Analyze Freshness
-                                    </button>
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="freshnessResult">
-                                        <!-- Freshness results will be shown here -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Analytics Tab -->
-                <div class="tab-pane fade" id="analytics">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Category Distribution</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="categoryChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Monthly Trends</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="trendsChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 mt-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Clustering Analysis</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div id="clusterAnalysis">
-                                        <!-- Cluster analysis will be shown here -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 mt-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Sustainability Score</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="progress" style="height: 30px;">
-                                        <div class="progress-bar bg-success" id="sustainabilityScore" role="progressbar" style="width: 0%">
-                                            0%
+                                    <div class="card">
+                                        <div class="card-header">
+                                             <h5>Category Distribution</h5>
+                                        </div>
+                                        <div class="card-body">
+                                             <canvas id="categoryChart"></canvas>
                                         </div>
                                     </div>
-                                    <p class="mt-2">Waste Rate: <span id="wasteRate">0%</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                             <h5>Monthly Trends</h5>
+                                        </div>
+                                        <div class="card-body">
+                                             <canvas id="trendsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                             <h5>Clustering Analysis</h5>
+                                        </div>
+                                        <div class="card-body">
+                                             <div id="clusterAnalysis" class="row">
+                                                 <!-- Cluster analysis will be shown here -->
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                             <h5>Sustainability Score</h5>
+                                        </div>
+                                        <div class="card-body">
+                                             <div class="progress mb-3" style="height: 30px;">
+                                                 <div class="progress-bar bg-success" id="sustainabilityScore" role="progressbar" style="width: 0%">
+                                                     0%
+                                                 </div>
+                                             </div>
+                                             <p class="mt-2 text-secondary">Waste Rate: <span id="wasteRate" class="text-light fw-bold">0%</span></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Risk Heatmap Tab -->
-                <div class="tab-pane fade" id="heatmap">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-th me-2"></i>Expiry Risk Heatmap</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="riskHeatmap">
-                                <!-- Risk heatmap will be displayed here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ML Predictions Tab -->
-                <div class="tab-pane fade" id="ml">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-brain me-2"></i>Machine Learning Predictions</h5>
-                        </div>
-                        <div class="card-body">
-                            <button class="btn btn-primary mb-3" onclick="generatePredictions()">
-                                <i class="fas fa-play me-1"></i>Generate Predictions
-                            </button>
-                            <div id="mlPredictions">
-                                <!-- ML predictions will be shown here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Settings Tab -->
-                <div class="tab-pane fade" id="settings">
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-database me-2"></i>Supabase Configuration</h5>
-                                </div>
-                                <div class="card-body">
-                                    <p class="text-muted small">Configure direct client-side Supabase synchronization. Save credentials to route all inventory operations directly to your Supabase tables.</p>
-                                    <div class="mb-3">
-                                        <label class="form-label" style="color: var(--dark-color) !important; text-shadow: none;">Supabase URL</label>
-                                        <input type="text" class="form-control" id="supabaseUrl" placeholder="https://your-project.supabase.co">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" style="color: var(--dark-color) !important; text-shadow: none;">Supabase Anon Key</label>
-                                        <input type="password" class="form-control" id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        <input class="form-check-input" type="checkbox" id="enableSupabase">
-                                        <label class="form-check-label" for="enableSupabase" style="color: var(--dark-color) !important; text-shadow: none;">
-                                            Enable Supabase Backend
-                                         </label>
-                                    </div>
-                                    <button class="btn btn-primary w-100" onclick="saveSupabaseConfig()">
-                                        <i class="fas fa-save me-1"></i>Save Configuration
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-bell me-2"></i>Web Notifications</h5>
-                                </div>
-                                <div class="card-body">
-                                    <p class="text-muted small">Enable HTML5 system push notifications to get browser warnings when items are close to expiration or low stock.</p>
-                                    <div class="d-grid gap-2 mb-3">
-                                        <button class="btn btn-primary" id="btnRequestNotification" onclick="requestNotificationPermission()">
-                                            <i class="fas fa-bell me-1"></i>Enable Desktop Notifications
-                                        </button>
-                                        <button class="btn btn-outline-secondary" onclick="testBrowserNotification()">
-                                            <i class="fas fa-paper-plane me-1"></i>Send Test Alert
-                                        </button>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" style="color: var(--dark-color) !important; text-shadow: none;">Polling Interval</label>
-                                        <select class="form-control" id="alertInterval">
-                                            <option value="10000">10 seconds (Testing)</option>
-                                             <option value="60000">1 minute</option>
-                                             <option value="300000">5 minutes</option>
-                                             <option value="3600000" selected>1 hour</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
+                        <!-- Risk Heatmap Tab -->
+                        <div class="tab-pane fade" id="heatmap">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5><i class="fas fa-file-alt me-2"></i>Supabase Schema DDL</h5>
+                                    <h5><i class="fas fa-th me-2 text-primary"></i>Expiry Risk Heatmap</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p class="text-muted small">Paste this SQL script in your Supabase SQL Editor to prepare your tables:</p>
-                                    <pre class="bg-dark text-white p-3 rounded" style="font-size: 0.8rem; overflow-x: auto; max-height: 250px;"><code class="text-light">-- Create food_items table for Smart Refrigerator
-CREATE TABLE IF NOT EXISTS food_items (
+                                    <div id="riskHeatmap">
+                                        <!-- Risk heatmap will be displayed here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ML Predictions Tab -->
+                        <div class="tab-pane fade" id="ml">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-brain me-2 text-primary"></i>Machine Learning Predictions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <button class="btn btn-primary mb-3" onclick="generatePredictions()">
+                                        <i class="fas fa-play me-1"></i>Generate Predictions
+                                    </button>
+                                    <div id="mlPredictions">
+                                        <!-- ML predictions will be shown here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Settings Tab -->
+                        <div class="tab-pane fade" id="settings">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <h5><i class="fas fa-database me-2 text-primary"></i>Supabase Configuration</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="text-muted small">Configure direct client-side Supabase synchronization. Save credentials to route all inventory operations directly to your Supabase tables.</p>
+                                            <div class="mb-3">
+                                                <label class="form-label">Supabase URL</label>
+                                                <input type="text" class="form-control" id="supabaseUrl" placeholder="https://your-project.supabase.co">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Supabase Anon Key</label>
+                                                <input type="password" class="form-control" id="supabaseKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="enableSupabase">
+                                                <label class="form-check-label" for="enableSupabase">
+                                                    Enable Supabase Backend
+                                                 </label>
+                                            </div>
+                                            <button class="btn btn-primary w-100" onclick="saveSupabaseConfig()">
+                                                <i class="fas fa-save me-1"></i>Save Configuration
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <h5><i class="fas fa-bell me-2 text-primary"></i>Web Notifications</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="text-muted small">Enable HTML5 system push notifications to get browser warnings when items are close to expiration or low stock.</p>
+                                            <div class="d-grid gap-2 mb-3">
+                                                <button class="btn btn-primary" id="btnRequestNotification" onclick="requestNotificationPermission()">
+                                                    <i class="fas fa-bell me-1"></i>Enable Desktop Notifications
+                                                </button>
+                                                <button class="btn btn-outline-secondary" onclick="testBrowserNotification()">
+                                                    <i class="fas fa-paper-plane me-1"></i>Send Test Alert
+                                                </button>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Polling Interval</label>
+                                                <select class="form-control" id="alertInterval">
+                                                    <option value="10000">10 seconds (Testing)</option>
+                                                    <option value="60000">1 minute</option>
+                                                    <option value="300000">5 minutes</option>
+                                                    <option value="3600000" selected>1 hour</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5><i class="fas fa-file-alt me-2 text-primary"></i>Supabase Schema DDL</h5>
+                                        </div>
+                                        <div class="card-body">
+                                             <p class="text-muted small">Paste this SQL script in your Supabase SQL Editor to prepare your tables:</p>
+                                             <pre class="bg-dark text-white p-3 rounded" style="font-size: 0.8rem; overflow-x: auto; max-height: 250px;"><code class="text-light">-- Create profiles table for user accounts
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  username text NOT NULL,
+  email text UNIQUE NOT NULL,
+  password_hash text NOT NULL,
+  household text,
+  preferences jsonb DEFAULT '{}'::jsonb,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for profiles
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public access for dev" ON public.profiles FOR ALL USING (true) WITH CHECK (true);
+
+-- Create food_items table for refrigerator items
+CREATE TABLE IF NOT EXISTS public.food_items (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id text NOT NULL,
   name text NOT NULL,
@@ -633,49 +680,79 @@ CREATE TABLE IF NOT EXISTS food_items (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS (or setup public access policies)
-ALTER TABLE food_items ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public access for dev" ON food_items FOR ALL USING (true) WITH CHECK (true);
+-- Enable RLS for food_items
+ALTER TABLE public.food_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public access for dev" ON public.food_items FOR ALL USING (true) WITH CHECK (true);
+
+-- Create notifications table
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id text NOT NULL,
+  title text NOT NULL,
+  message text NOT NULL,
+  type text DEFAULT 'info',
+  is_read boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for notifications
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public access for dev" ON public.notifications FOR ALL USING (true) WITH CHECK (true);
 </code></pre>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div> <!-- closes tab-content -->
-        </div> <!-- closes col-lg-8 col-md-7 -->
-    </div> <!-- closes row -->
-</div> <!-- closes dashboardSection -->
+                    </div> <!-- closes tab-content -->
+                </div> <!-- closes col-lg-8 col-md-7 -->
+            </div> <!-- closes row -->
+        </div> <!-- closes dashboardSection -->
 
         <!-- Welcome Section (shown when not logged in) -->
         <div id="welcomeSection">
-            <div class="row justify-content-center">
-                <div class="col-md-8 text-center">
-                    <div class="card">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-10 text-center">
+                    <div class="card p-4 p-md-5">
                         <div class="card-body">
-                            <i class="fas fa-snowflake fa-4x text-primary mb-4"></i>
-                            <h1>Welcome to Smart Refrigerator Food Management System</h1>
-                            <p class="lead">Intelligent Food Inventory Management with AI-Powered Insights</p>
-                            <div class="row mt-4">
+                            <div class="welcome-badge mb-3 d-inline-block px-3 py-1 rounded-pill" style="background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.2);">
+                                <span style="color: var(--primary-color) !important; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-bolt me-1"></i> Powered by IoT & AI</span>
+                            </div>
+                            <i class="fas fa-snowflake fa-5x text-primary mb-4"></i>
+                            <h1 class="display-5 mb-3">Smart Refrigerator Food Management</h1>
+                            <p class="lead mb-4 mx-auto" style="max-width: 600px;">
+                                Experience the future of kitchen management. Track freshness in real-time, predict consumption, and eliminate food waste with our intelligent IoT dashboard.
+                            </p>
+                            
+                            <div class="row g-4 mt-2 justify-content-center text-start">
                                 <div class="col-md-4">
-                                    <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
-                                    <h5>Smart Analytics</h5>
-                                    <p>Track consumption patterns and reduce waste</p>
+                                    <div class="feature-box p-4 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                        <i class="fas fa-chart-line fa-2x text-info mb-3" style="filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));"></i>
+                                        <h5>Smart Analytics</h5>
+                                        <p class="small text-muted mb-0">Track consumption habits, sustainability index, and shelf-life metrics using advanced data models.</p>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <i class="fas fa-camera fa-2x text-warning mb-2"></i>
-                                    <h5>Freshness Detection</h5>
-                                    <p>AI-powered food freshness analysis</p>
+                                    <div class="feature-box p-4 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                        <i class="fas fa-camera fa-2x text-warning mb-3" style="filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));"></i>
+                                        <h5>Freshness Detection</h5>
+                                        <p class="small text-muted mb-0">Upload high-res images of produce to analyze ripeness index and estimate spoilage using computer vision.</p>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <i class="fas fa-bell fa-2x text-success mb-2"></i>
-                                    <h5>Smart Alerts</h5>
-                                    <p>Never let food go to waste again</p>
+                                    <div class="feature-box p-4 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                        <i class="fas fa-bell fa-2x text-danger mb-3" style="filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));"></i>
+                                        <h5>Smart Alerts</h5>
+                                        <p class="small text-muted mb-0">Receive desktop warnings and real-time Family Hub notifications before your stock reaches expiration.</p>
+                                    </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary btn-lg mt-4" onclick="showLogin()">
-                                <i class="fas fa-sign-in-alt me-2"></i>Get Started
-                            </button>
+                            
+                            <div class="mt-5">
+                                <button class="btn btn-primary btn-lg px-5 py-3 shadow-lg" onclick="showLogin()">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Access Dashboard
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -684,9 +761,9 @@ CREATE POLICY "Allow public access for dev" ON food_items FOR ALL USING (true) W
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
+    <footer class="text-center py-3 mt-5">
         <div class="container">
-            <p>&copy; 2024 Smart Refrigerator Food Management System - Intelligent Food Management</p>
+            <p>&copy; 2026 Smart Refrigerator Food Management System - Intelligent Kitchen Solutions</p>
         </div>
     </footer>
 

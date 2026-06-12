@@ -1,0 +1,8 @@
+Active Smart Fridge Backend Database: SUPABASE
+Starting Smart Fridge AI Consolidated Server...
+Open your browser to: http://localhost:5000
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit

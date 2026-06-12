@@ -529,8 +529,136 @@ function deleteItem(itemId) {
 }
 
 function editItem(itemId) {
-    // For demo, just show an alert
-    alert('Edit functionality would open a modal to edit the item details.');
+    const item = inventoryData.find(i => (i._id || i.id) === itemId);
+    if (!item) return;
+    
+    // Remove existing edit modal if present
+    const existingModal = document.getElementById('editItemModal');
+    if (existingModal) existingModal.remove();
+    
+    const expiryVal = item.expiry || item.expiry_date || '';
+    
+    // Create new edit modal
+    const modalHtml = `
+    <div class="modal fade" id="editItemModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit text-primary me-2"></i>Edit Food Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editFoodForm">
+                        <div class="mb-3">
+                            <label class="form-label">Food Name</label>
+                            <input type="text" class="form-control" id="editFoodName" value="${item.name}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" id="editFoodCategory" required>
+                                <option value="Fruits" ${item.category === 'Fruits' ? 'selected' : ''}>Fruits</option>
+                                <option value="Vegetables" ${item.category === 'Vegetables' ? 'selected' : ''}>Vegetables</option>
+                                <option value="Dairy" ${item.category === 'Dairy' ? 'selected' : ''}>Dairy</option>
+                                <option value="Packaged" ${item.category === 'Packaged' ? 'selected' : ''}>Packaged</option>
+                                <option value="Meat" ${item.category === 'Meat' ? 'selected' : ''}>Meat</option>
+                                <option value="Other" ${item.category === 'Other' ? 'selected' : ''}>Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <div class="row g-2">
+                                <div class="col-md-7">
+                                    <input type="number" class="form-control" id="editFoodQuantity" min="0" step="0.1" value="${item.quantity}" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <select class="form-control" id="editQuantityUnit">
+                                        <option value="pieces" ${item.quantity_unit === 'pieces' ? 'selected' : ''}>Pieces</option>
+                                        <option value="kg" ${item.quantity_unit === 'kg' ? 'selected' : ''}>Kilograms</option>
+                                        <option value="g" ${item.quantity_unit === 'g' ? 'selected' : ''}>Grams</option>
+                                        <option value="lb" ${item.quantity_unit === 'lb' ? 'selected' : ''}>Pounds</option>
+                                        <option value="oz" ${item.quantity_unit === 'oz' ? 'selected' : ''}>Ounces</option>
+                                        <option value="liters" ${item.quantity_unit === 'liters' ? 'selected' : ''}>Liters</option>
+                                        <option value="ml" ${item.quantity_unit === 'ml' ? 'selected' : ''}>Milliliters</option>
+                                        <option value="cups" ${item.quantity_unit === 'cups' ? 'selected' : ''}>Cups</option>
+                                        <option value="dozen" ${item.quantity_unit === 'dozen' ? 'selected' : ''}>Dozen</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Storage Location</label>
+                            <select class="form-control" id="editStorageLocation">
+                                <option value="Shelf" ${item.storage_location === 'Shelf' ? 'selected' : ''}>Shelf</option>
+                                <option value="Drawer" ${item.storage_location === 'Drawer' ? 'selected' : ''}>Drawer</option>
+                                <option value="Freezer" ${item.storage_location === 'Freezer' ? 'selected' : ''}>Freezer</option>
+                                <option value="Door" ${item.storage_location === 'Door' ? 'selected' : ''}>Door</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control" id="editFoodExpiry" value="${expiryVal}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-2">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('editItemModal'));
+    modal.show();
+    
+    document.getElementById('editFoodForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const updatedData = {
+            name: document.getElementById('editFoodName').value,
+            category: document.getElementById('editFoodCategory').value,
+            quantity: parseFloat(document.getElementById('editFoodQuantity').value),
+            quantity_unit: document.getElementById('editQuantityUnit').value,
+            storage_location: document.getElementById('editStorageLocation').value,
+            expiry: document.getElementById('editFoodExpiry').value,
+            has_expiry: true
+        };
+        
+        if (SupabaseAdapter.isEnabled()) {
+            SupabaseAdapter.updateItem(itemId, updatedData)
+            .then(() => {
+                modal.hide();
+                loadInventory();
+                loadDashboard();
+            })
+            .catch(error => {
+                alert('Supabase update error: ' + error.message);
+            });
+        } else {
+            fetch(`/update/${itemId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                modal.hide();
+                loadInventory();
+                loadDashboard();
+            })
+            .catch(error => {
+                console.error('Update error:', error);
+                // Fallback / simulation
+                const idx = inventoryData.findIndex(i => (i._id || i.id) === itemId);
+                if (idx !== -1) {
+                    inventoryData[idx] = { ...inventoryData[idx], ...updatedData };
+                }
+                modal.hide();
+                loadInventory();
+                loadDashboard();
+            });
+        }
+    });
 }
 
 // Priority Queue
@@ -1220,15 +1348,6 @@ function triggerFlyingAnimation(name, category, location) {
     const startRect = submitBtn.getBoundingClientRect();
     const endRect = targetShelf.getBoundingClientRect();
     
-    const particle = document.createElement('div');
-    particle.className = 'flying-food-particle';
-    const icon = getCategoryIcon(category);
-    particle.innerHTML = `<i class="${icon} me-1"></i> ${name}`;
-    
-    particle.style.left = `${startRect.left + window.scrollX}px`;
-    particle.style.top = `${startRect.top + window.scrollY}px`;
-    document.body.appendChild(particle);
-    
     // Open doors so they see it land
     const freezerDoor = document.getElementById('freezerDoor');
     const fridgeDoor = document.getElementById('fridgeDoor');
@@ -1239,23 +1358,62 @@ function triggerFlyingAnimation(name, category, location) {
         fridgeDoor.classList.add('open');
     }
     
-    setTimeout(() => {
-        particle.style.left = `${endRect.left + window.scrollX + (endRect.width / 2) - 50}px`;
-        particle.style.top = `${endRect.top + window.scrollY + (endRect.height / 2) - 15}px`;
-        particle.style.transform = 'scale(0.5)';
-        particle.style.opacity = '0.2';
-    }, 50);
+    const particle = document.createElement('div');
+    particle.className = 'flying-food-particle';
+    const icon = getCategoryIcon(category);
+    particle.innerHTML = `<i class="${icon} me-1"></i> ${name}`;
+    document.body.appendChild(particle);
     
-    setTimeout(() => {
-        particle.remove();
-        const shelfGlass = targetShelf.nextElementSibling;
-        if (shelfGlass) {
-            shelfGlass.style.boxShadow = '0 0 20px rgba(0, 242, 254, 1)';
-            setTimeout(() => {
-                shelfGlass.style.boxShadow = '';
-            }, 500);
+    const p0 = { x: startRect.left + window.scrollX, y: startRect.top + window.scrollY };
+    const p2 = { x: endRect.left + window.scrollX + (endRect.width / 2) - 50, y: endRect.top + window.scrollY + (endRect.height / 2) - 15 };
+    
+    // Control point to create an upward arc
+    const p1 = {
+        x: (p0.x + p2.x) / 2,
+        y: Math.min(p0.y, p2.y) - 150 // Go 150px higher than the highest point
+    };
+    
+    const duration = 900; // ms
+    const startTime = performance.now();
+    
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        
+        // Quadratic Bezier formula
+        const x = (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x;
+        const y = (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y;
+        
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        
+        // Add rotation and scaling transitions
+        const scale = 1 - t * 0.5; // Scale down from 1 to 0.5
+        const rotation = t * 360;  // Spin 1 full rotation
+        const opacity = t < 0.8 ? 1 : 1 - (t - 0.8) / 0.2; // Fade out near the end
+        
+        particle.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+        particle.style.opacity = opacity;
+        
+        if (t < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            particle.remove();
+            
+            // Add a visual flash to the glass shelf on arrival
+            const shelfGlass = targetShelf.nextElementSibling;
+            if (shelfGlass) {
+                shelfGlass.style.boxShadow = '0 0 25px rgba(0, 242, 254, 1)';
+                shelfGlass.style.background = 'rgba(0, 242, 254, 0.8)';
+                setTimeout(() => {
+                    shelfGlass.style.boxShadow = '';
+                    shelfGlass.style.background = '';
+                }, 400);
+            }
         }
-    }, 850);
+    }
+    
+    requestAnimationFrame(animate);
 }
 
 // ==========================================
@@ -1360,6 +1518,37 @@ const SupabaseAdapter = {
             throw error;
         }
         return true;
+    },
+    
+    updateItem: async function(itemId, itemData) {
+        const client = getSupabaseClient();
+        if (!client) return null;
+        
+        const userId = currentUser ? currentUser.id : 'demo';
+        const daysLeft = itemData.expiry ? calculateDaysLeft(itemData.expiry) : 0;
+        const priorityScore = calculatePriorityScoreLocal(daysLeft, itemData.quantity);
+        
+        const { data, error } = await client
+            .from('food_items')
+            .update({
+                name: itemData.name,
+                category: itemData.category,
+                quantity: itemData.quantity,
+                quantity_unit: itemData.quantity_unit,
+                storage_location: itemData.storage_location,
+                expiry_date: itemData.expiry || null,
+                has_expiry: itemData.has_expiry,
+                days_left: daysLeft,
+                priority_score: priorityScore
+            })
+            .eq('id', itemId)
+            .select();
+            
+        if (error) {
+            console.error("Supabase update error:", error);
+            throw error;
+        }
+        return data[0];
     }
 };
 
