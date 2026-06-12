@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import json
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,6 +21,9 @@ CORS(app)
 # Dynamic Backend Detection & Conditional Imports
 # ---------------------------------------------------------
 DB_BACKEND = os.getenv('DB_BACKEND', 'mock').lower()
+
+SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://drzoyuxfvzxkstrrjxes.supabase.co')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY', 'sb_publishable_YBu9s8jf7R-4y3K4mQ57CQ_jfFqQ2Zu')
 
 # SQLite setup
 try:
@@ -73,8 +77,103 @@ if DB_BACKEND == 'mongodb' and not HAS_PYMONGO:
 elif DB_BACKEND == 'sqlite' and not HAS_SQLITE:
     print("[WARNING] SQLite requested but sqlite3 not available. Falling back to Mock.")
     DB_BACKEND = 'mock'
+elif DB_BACKEND == 'supabase' and (not SUPABASE_URL or not SUPABASE_KEY):
+    print("[WARNING] Supabase requested but URL or Key not set. Falling back to Mock.")
+    DB_BACKEND = 'mock'
 
 print(f"Active Smart Fridge Backend Database: {DB_BACKEND.upper()}")
+
+# Supabase REST Helpers
+def get_supabase_items(user_id):
+    url = f"{SUPABASE_URL}/rest/v1/food_items?user_id=eq.{user_id}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    try:
+        res = requests.get(url, headers=headers)
+        if res.status_code == 200:
+            items = res.json()
+            for item in items:
+                item['expiry'] = item.get('expiry_date')
+                item['id'] = str(item.get('id'))
+            return items
+        else:
+            print(f"Supabase GET error: {res.status_code} {res.text}")
+            return []
+    except Exception as e:
+        print(f"Supabase connection exception: {e}")
+        return []
+
+def add_supabase_item(user_id, item_data):
+    url = f"{SUPABASE_URL}/rest/v1/food_items"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+    payload = {
+        "user_id": str(user_id),
+        "name": item_data['name'],
+        "category": item_data['category'],
+        "quantity": float(item_data['quantity']),
+        "quantity_unit": item_data.get('quantity_unit', 'pieces'),
+        "storage_location": item_data.get('storage_location', 'Shelf'),
+        "expiry_date": item_data['expiry'],
+        "days_left": int(item_data['days_left']),
+        "priority_score": int(item_data['priority_score']),
+        "has_expiry": True
+    }
+    try:
+        res = requests.post(url, headers=headers, json=payload)
+        if res.status_code in [200, 201]:
+            ret = res.json()[0]
+            ret['id'] = str(ret.get('id'))
+            return ret
+        else:
+            print(f"Supabase POST error: {res.status_code} {res.text}")
+            return None
+    except Exception as e:
+        print(f"Supabase insert exception: {e}")
+        return None
+
+def update_supabase_item(user_id, item_id, item_data):
+    url = f"{SUPABASE_URL}/rest/v1/food_items?id=eq.{item_id}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "name": item_data['name'],
+        "category": item_data['category'],
+        "quantity": float(item_data['quantity']),
+        "quantity_unit": item_data.get('quantity_unit', 'pieces'),
+        "storage_location": item_data.get('storage_location', 'Shelf'),
+        "expiry_date": item_data['expiry'],
+        "days_left": int(item_data['days_left']),
+        "priority_score": int(item_data['priority_score'])
+    }
+    try:
+        res = requests.patch(url, headers=headers, json=payload)
+        return res.status_code in [200, 204]
+    except Exception as e:
+        print(f"Supabase update exception: {e}")
+        return False
+
+def delete_supabase_item(user_id, item_id):
+    url = f"{SUPABASE_URL}/rest/v1/food_items?id=eq.{item_id}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    try:
+        res = requests.delete(url, headers=headers)
+        return res.status_code in [200, 204]
+    except Exception as e:
+        print(f"Supabase delete exception: {e}")
+        return False
 
 # Initialize MongoDB if selected
 if DB_BACKEND == 'mongodb':
@@ -361,6 +460,9 @@ def dashboard():
             dict_item['expiry'] = dict_item['expiry_date']
             items.append(dict_item)
             
+    elif DB_BACKEND == 'supabase':
+        items = get_supabase_items(user_id)
+        
     else: # mock
         items = [dict(i) for i in mock_inventory if i['user_id'] == user_id]
 
@@ -430,6 +532,22 @@ def add_food():
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+    elif DB_BACKEND == 'supabase':
+        ret = add_supabase_item(user_id, {
+            "name": data['name'],
+            "category": data['category'],
+            "quantity": float(data['quantity']),
+            "quantity_unit": data.get('quantity_unit', 'pieces'),
+            "storage_location": data.get('storage_location', 'Shelf'),
+            "expiry": data['expiry'],
+            "days_left": days_left,
+            "priority_score": priority_score
+        })
+        if ret:
+            return jsonify({"message": "Item Added", "item_id": ret['id'], "priority_score": priority_score})
+        else:
+            return jsonify({"error": "Failed to add item to Supabase"}), 500
+
     else: # mock
         item_id = str(len(mock_inventory) + 1)
         mock_item = {
@@ -472,6 +590,9 @@ def get_items():
             dict_item['expiry'] = dict_item['expiry_date']
             items.append(dict_item)
             
+    elif DB_BACKEND == 'supabase':
+        items = get_supabase_items(user_id)
+        
     else: # mock
         items = [dict(i) for i in mock_inventory if i['user_id'] == user_id]
 
@@ -536,6 +657,22 @@ def update_item(item_id):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
             
+    elif DB_BACKEND == 'supabase':
+        success = update_supabase_item(user_id, item_id, {
+            "name": data['name'],
+            "category": data['category'],
+            "quantity": float(data['quantity']),
+            "quantity_unit": data.get('quantity_unit', 'pieces'),
+            "storage_location": data.get('storage_location', 'Shelf'),
+            "expiry": data['expiry'],
+            "days_left": days_left,
+            "priority_score": priority_score
+        })
+        if success:
+            return jsonify({"message": "Item updated"})
+        else:
+            return jsonify({"error": "Failed to update item in Supabase"}), 500
+            
     else: # mock
         for item in mock_inventory:
             if item['id'] == item_id and item['user_id'] == user_id:
@@ -572,6 +709,13 @@ def delete_item(item_id):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
             
+    elif DB_BACKEND == 'supabase':
+        success = delete_supabase_item(user_id, item_id)
+        if success:
+            return jsonify({"message": "Deleted"})
+        else:
+            return jsonify({"error": "Failed to delete item from Supabase"}), 500
+            
     else: # mock
         global mock_inventory
         mock_inventory = [i for i in mock_inventory if not (i['id'] == item_id and i['user_id'] == user_id)]
@@ -602,6 +746,8 @@ def get_alerts():
             dict_item = dict(di)
             dict_item['expiry'] = dict_item['expiry_date']
             items.append(dict_item)
+    elif DB_BACKEND == 'supabase':
+        items = get_supabase_items(user_id)
     else:
         items = [dict(i) for i in mock_inventory if i['user_id'] == user_id]
         
@@ -657,6 +803,8 @@ def predict_consumption():
         db_items = conn.execute('SELECT * FROM food_items WHERE user_id = ? AND days_left >= 0', (user_id,)).fetchall()
         conn.close()
         items = [dict(di) for di in db_items]
+    elif DB_BACKEND == 'supabase':
+        items = [i for i in get_supabase_items(user_id) if i.get('days_left', 0) >= 0]
     else:
         items = [dict(i) for i in mock_inventory if i['user_id'] == user_id]
 
@@ -695,6 +843,8 @@ def analytics():
         db_items = conn.execute('SELECT * FROM food_items WHERE user_id = ?', (user_id,)).fetchall()
         conn.close()
         items = [dict(di) for di in db_items]
+    elif DB_BACKEND == 'supabase':
+        items = get_supabase_items(user_id)
     else:
         items = [dict(i) for i in mock_inventory if i['user_id'] == user_id]
 
