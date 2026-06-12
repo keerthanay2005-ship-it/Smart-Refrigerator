@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Refrigerator AI - Intelligent Food Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-snowflake me-2"></i>Smart Fridge AI
+            </a>
+            <div class="navbar-nav ms-auto">
+                <button class="btn btn-outline-light" id="loginBtn" onclick="showLogin()">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </button>
+                <button class="btn btn-outline-light d-none" id="logoutBtn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login / Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="authTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#register">Register</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="login">
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="loginEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="loginPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="register">
+                            <form id="registerForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="registerUsername" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="registerEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="registerPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number (for SMS alerts) *</label>
+                                    <input type="tel" class="form-control" id="registerPhone" placeholder="+919876543210" required>
+                                    <small class="text-muted">Include country code (+91 for India) for SMS notifications</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Household (Optional)</label>
+                                    <input type="text" class="form-control" id="registerHousehold">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="d-none">
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="totalItems">0</h4>
+                                    <p class="mb-0">Total Items</p>
+                                </div>
+                                <i class="fas fa-box fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="expiringSoon">0</h4>
+                                    <p class="mb-0">Expiring Soon</p>
+                                </div>
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="lowStock">0</h4>
+                                    <p class="mb-0">Low Stock</p>
+                                </div>
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="expired">0</h4>
+                                    <p class="mb-0">Expired</p>
+                                </div>
+                                <i class="fas fa-trash fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs mb-4" id="mainTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#inventory">
+                        <i class="fas fa-list me-1"></i>Inventory
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#priority">
+                        <i class="fas fa-sort-amount-down me-1"></i>Priority Queue
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#freshness">
+                        <i class="fas fa-camera me-1"></i>Freshness Detection
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#analytics">
+                        <i class="fas fa-chart-bar me-1"></i>Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#heatmap">
+                        <i class="fas fa-th me-1"></i>Risk Heatmap
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#ml">
+                        <i class="fas fa-brain me-1"></i>ML Predictions
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Inventory Tab -->
+                <div class="tab-pane fade show active" id="inventory">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-plus me-2"></i>Add Food Item</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="addFoodForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Food Name</label>
+                                            <input type="text" class="form-control" id="foodName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Category</label>
+                                            <select class="form-control" id="foodCategory" required>
+                                                <option value="">Select Category</option>
+                                                <option value="Fruits">Fruits</option>
+                                                <option value="Vegetables">Vegetables</option>
+                                                <option value="Dairy">Dairy</option>
+                                                <option value="Packaged">Packaged</option>
+                                                <option value="Meat">Meat</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="number" class="form-control" id="foodQuantity" min="1" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Storage Location</label>
+                                            <select class="form-control" id="storageLocation">
+                                                <option value="Shelf">Shelf</option>
+                                                <option value="Drawer">Drawer</option>
+                                                <option value="Freezer">Freezer</option>
+                                                <option value="Door">Door</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Expiry Date</label>
+                                            <input type="date" class="form-control" id="foodExpiry" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-plus me-1"></i>Add Item
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5><i class="fas fa-list me-2"></i>Food Inventory</h5>
+                                    <div class="d-flex gap-2">
+                                        <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search items...">
+                                        <select class="form-control form-control-sm" id="filterCategory">
+                                            <option value="">All Categories</option>
+                                            <option value="Fruits">Fruits</option>
+                                            <option value="Vegetables">Vegetables</option>
+                                            <option value="Dairy">Dairy</option>
+                                            <option value="Packaged">Packaged</option>
+                                            <option value="Meat">Meat</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="inventoryTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Category</th>
+                                                    <th>Quantity</th>
+                                                    <th>Location</th>
+                                                    <th>Expiry</th>
+                                                    <th>Days Left</th>
+                                                    <th>Risk</th>
+                                                    <th>Priority</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inventoryBody">
+                                                <!-- Items will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Queue Tab -->
+                <div class="tab-pane fade" id="priority">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-sort-amount-down me-2"></i>Smart Consumption Priority Queue</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="priorityQueue">
+                                <!-- Priority items will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Freshness Detection Tab -->
+                <div class="tab-pane fade" id="freshness">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-camera me-2"></i>Freshness Detection</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Upload Image or Use Camera</label>
+                                        <input type="file" class="form-control" id="imageUpload" accept="image/*">
+                                        <button class="btn btn-secondary mt-2" onclick="startCamera()">
+                                            <i class="fas fa-camera me-1"></i>Use Camera
+                                        </button>
+                                    </div>
+                                    <div id="imagePreview" class="mb-3"></div>
+                                    <button class="btn btn-primary" onclick="detectFreshness()">
+                                        <i class="fas fa-search me-1"></i>Analyze Freshness
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="freshnessResult">
+                                        <!-- Freshness results will be shown here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div class="tab-pane fade" id="analytics">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Category Distribution</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Monthly Trends</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="trendsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Clustering Analysis</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="clusterAnalysis">
+                                        <!-- Cluster analysis will be shown here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Sustainability Score</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="progress" style="height: 30px;">
+                                        <div class="progress-bar bg-success" id="sustainabilityScore" role="progressbar" style="width: 0%">
+                                            0%
+                                        </div>
+                                    </div>
+                                    <p class="mt-2">Waste Rate: <span id="wasteRate">0%</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Heatmap Tab -->
+                <div class="tab-pane fade" id="heatmap">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-th me-2"></i>Expiry Risk Heatmap</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="riskHeatmap">
+                                <!-- Risk heatmap will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ML Predictions Tab -->
+                <div class="tab-pane fade" id="ml">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-brain me-2"></i>Machine Learning Predictions</h5>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary mb-3" onclick="generatePredictions()">
+                                <i class="fas fa-play me-1"></i>Generate Predictions
+                            </button>
+                            <div id="mlPredictions">
+                                <!-- ML predictions will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Section (shown when not logged in) -->
+        <div id="welcomeSection">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-snowflake fa-4x text-primary mb-4"></i>
+                            <h1>Welcome to Smart Fridge AI</h1>
+                            <p class="lead">Intelligent Food Inventory Management with AI-Powered Insights</p>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                                    <h5>Smart Analytics</h5>
+                                    <p>Track consumption patterns and reduce waste</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fas fa-camera fa-2x text-warning mb-2"></i>
+                                    <h5>Freshness Detection</h5>
+                                    <p>AI-powered food freshness analysis</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fas fa-bell fa-2x text-success mb-2"></i>
+                                    <h5>Smart Alerts</h5>
+                                    <p>Never let food go to waste again</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-lg mt-4" onclick="showLogin()">
+                                <i class="fas fa-sign-in-alt me-2"></i>Get Started
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p>&copy; 2024 Smart Fridge AI - Intelligent Food Management System</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>

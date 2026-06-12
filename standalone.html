@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Refrigerator Food Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        /* Beige and Brown color scheme */
+        :root {
+            --beige-light: #f5f5dc;
+            --beige-medium: #d4a574;
+            --beige-dark: #8b7355;
+            --brown-light: #a0826d;
+            --brown-medium: #8b7355;
+            --brown-dark: #5d4e37;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #d4a574 0%, #8b7355 100%) !important;
+            color: #3e2723 !important;
+        }
+        .card {
+            background: rgba(245, 245, 220, 0.95) !important;
+            color: #3e2723 !important;
+            border: 1px solid #d4a574 !important;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #8b7355, #5d4e37) !important;
+            color: #f5f5dc !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #3e2723 !important;
+        }
+        p, span, div {
+            color: #3e2723 !important;
+        }
+        .text-muted {
+            color: #5d4e37 !important;
+        }
+        .text-form-text {
+            color: #8b7355 !important;
+        }
+        .form-check-label {
+            color: #f5f5dc !important;
+            font-weight: 600;
+        }
+        input[type="password"] {
+            color: #000000 !important;
+            -webkit-text-security: disc !important;
+            background-color: #f5f5dc !important;
+            border: 1px solid #8b7355 !important;
+        }
+        input[type="password"]::placeholder {
+            color: #8b7355 !important;
+        }
+        .form-control[type="password"] {
+            color: #000000 !important;
+            background-color: #f5f5dc !important;
+            border: 1px solid #8b7355 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8b7355, #5d4e37) !important;
+            border: 1px solid #8b7355 !important;
+        }
+        .table {
+            background: #f5f5dc !important;
+            border: 1px solid #a0826d !important;
+        }
+        .table thead th {
+            background: linear-gradient(135deg, #a0826d, #8b7355) !important;
+            color: #f5f5dc !important;
+        }
+        .table tbody tr:hover {
+            background: #d4a574 !important;
+        }
+        .table tbody td {
+            color: #8b7355 !important;
+            font-weight: 500;
+        }
+        .table tbody tr:hover td {
+            color: #5d4e37 !important;
+        }
+        .table tbody tr td.form-label {
+            color: #8b7355 !important;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: var(--transition);
+            font-weight: 500;
+            color: #f5f5dc !important;
+        }
+        .nav-tabs .nav-link:hover {
+            background-color: #d4a574 !important;
+            color: #8b7355 !important;
+        }
+        .form-control {
+            color: #f5f5dc !important;
+            background-color: rgba(139, 115, 85, 0.2) !important;
+            border: 1px solid #8b7355 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-snowflake me-2"></i>Smart Refrigerator Food Management System
+            </a>
+            <div class="navbar-nav ms-auto">
+                <button class="btn btn-outline-light" id="loginBtn" onclick="showLogin()">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </button>
+                <button class="btn btn-outline-light d-none" id="logoutBtn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Welcome Section -->
+        <div id="welcomeSection">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-snowflake fa-4x text-primary mb-4"></i>
+                            <h1>Welcome to Smart Refrigerator Food Management System</h1>
+                            <p class="lead">Intelligent Food Inventory Management with AI-Powered Insights</p>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                                    <h5>Smart Analytics</h5>
+                                    <p>Track consumption patterns and reduce waste</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fas fa-camera fa-2x text-warning mb-2"></i>
+                                    <h5>Freshness Detection</h5>
+                                    <p>AI-powered food freshness analysis</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fas fa-bell fa-2x text-success mb-2"></i>
+                                    <h5>Smart Alerts</h5>
+                                    <p>Never let food go to waste again</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-lg mt-4" onclick="showLogin()">
+                                <i class="fas fa-sign-in-alt me-2"></i>Get Started
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section (hidden initially) -->
+        <div id="dashboardSection" class="d-none">
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="totalItems">0</h4>
+                                    <p class="mb-0">Total Items</p>
+                                </div>
+                                <i class="fas fa-box fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="expiringSoon">0</h4>
+                                    <p class="mb-0">Expiring Soon</p>
+                                </div>
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="lowStock">0</h4>
+                                    <p class="mb-0">Low Stock</p>
+                                </div>
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 id="expired">0</h4>
+                                    <p class="mb-0">Expired</p>
+                                </div>
+                                <i class="fas fa-trash fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Item Form -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-plus me-2"></i>Add Food Item</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="addFoodForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Food Name</label>
+                                    <input type="text" class="form-control" id="foodName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-control" id="foodCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Fruits">Fruits</option>
+                                        <option value="Vegetables">Vegetables</option>
+                                        <option value="Dairy">Dairy</option>
+                                        <option value="Packaged">Packaged</option>
+                                        <option value="Meat">Meat</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="ripenessField" style="display: none;">
+                                    <label class="form-label">Ripeness</label>
+                                    <select class="form-control" id="ripeness">
+                                        <option value="">Select ripeness</option>
+                                        <option value="raw">Raw</option>
+                                        <option value="ripe">Ripe</option>
+                                        <option value="overripe">Overripe</option>
+                                        <option value="unripe">Unripe</option>
+                                    </select>
+                                    <small class="form-text text-muted">Helps determine consumption priority</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Quantity</label>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <input type="number" class="form-control" id="foodQuantity" min="0" step="0.1" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-control" id="quantityUnit">
+                                                <option value="pieces">Pieces</option>
+                                                <option value="kg">Kilograms</option>
+                                                <option value="g">Grams</option>
+                                                <option value="lb">Pounds</option>
+                                                <option value="oz">Ounces</option>
+                                                <option value="liters">Liters</option>
+                                                <option value="ml">Milliliters</option>
+                                                <option value="cups">Cups</option>
+                                                <option value="dozen">Dozen</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" id="foodExpiry" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-plus me-1"></i>Add Item
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-list me-2"></i>Food Inventory</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Quantity</th>
+                                            <th>Expiry</th>
+                                            <th>Days Left</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inventoryBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center">No items yet. Add your first item!</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p>&copy; 2024 Smart Refrigerator Food Management System - Intelligent Food Management</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/script.js"></script>
+    
+    <script>
+        // Simple demo functionality for standalone testing
+        let currentUser = null;
+        let inventoryData = [];
+
+        function showLogin() {
+            // For demo, just show dashboard
+            currentUser = { id: 'demo', username: 'Demo User' };
+            document.getElementById('dashboardSection').classList.remove('d-none');
+            document.getElementById('welcomeSection').classList.add('d-none');
+            document.getElementById('loginBtn').classList.add('d-none');
+            document.getElementById('logoutBtn').classList.remove('d-none');
+            loadDashboard();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('dashboardSection').classList.add('d-none');
+            document.getElementById('welcomeSection').classList.remove('d-none');
+            document.getElementById('loginBtn').classList.remove('d-none');
+            document.getElementById('logoutBtn').classList.add('d-none');
+        }
+
+        function loadDashboard() {
+            // Update with demo data
+            document.getElementById('totalItems').textContent = inventoryData.length;
+            document.getElementById('expiringSoon').textContent = inventoryData.filter(item => item.days_left <= 3).length;
+            document.getElementById('lowStock').textContent = inventoryData.filter(item => item.quantity <= 2).length;
+            document.getElementById('expired').textContent = inventoryData.filter(item => item.days_left < 0).length;
+        }
+
+        // Category change to show/hide ripeness field
+        document.getElementById('foodCategory').addEventListener('change', function() {
+            const category = document.getElementById('foodCategory').value;
+            const ripenessField = document.getElementById('ripenessField');
+            
+            // Show ripeness field for fruits and vegetables
+            if (category === 'Fruits' || category === 'Vegetables') {
+                ripenessField.style.display = 'block';
+            } else {
+                ripenessField.style.display = 'none';
+            }
+        });
+
+        // Add item functionality
+        document.getElementById('addFoodForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const item = {
+                _id: Date.now().toString(),
+                name: document.getElementById('foodName').value,
+                category: document.getElementById('foodCategory').value,
+                quantity: parseFloat(document.getElementById('foodQuantity').value),
+                quantity_unit: document.getElementById('quantityUnit').value,
+                expiry: document.getElementById('foodExpiry').value,
+                days_left: Math.floor((new Date(document.getElementById('foodExpiry').value) - new Date()) / (1000 * 60 * 60 * 24)),
+                ripeness: document.getElementById('ripeness')?.value || null
+            };
+            
+            inventoryData.push(item);
+            displayInventory();
+            loadDashboard();
+            this.reset();
+        });
+
+        function displayInventory() {
+            const tbody = document.getElementById('inventoryBody');
+            tbody.innerHTML = '';
+            
+            if (inventoryData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No items yet. Add your first item!</td></tr>';
+                return;
+            }
+            
+            inventoryData.forEach(item => {
+                const quantityDisplay = `${item.quantity} ${item.quantity_unit || 'pieces'}`;
+                const isLowStock = item.quantity_unit === 'pieces' ? item.quantity <= 2 : item.quantity <= 0.5;
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td><span class="badge bg-secondary">${item.category}</span></td>
+                    <td><span class="badge ${isLowStock ? 'bg-warning' : 'bg-success'}">${quantityDisplay}</span></td>
+                    <td>${new Date(item.expiry).toLocaleDateString()}</td>
+                    <td><span class="badge ${item.days_left < 0 ? 'bg-danger' : item.days_left <= 3 ? 'bg-warning' : 'bg-success'}">${item.days_left} days</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteItem('${item._id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+            });
+        }
+
+        function deleteItem(itemId) {
+            if (confirm('Delete this item?')) {
+                inventoryData = inventoryData.filter(item => item._id !== itemId);
+                displayInventory();
+                loadDashboard();
+            }
+        }
+    </script>
+</body>
+</html>

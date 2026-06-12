@@ -1,0 +1,903 @@
+/* Smart Refrigerator Food Management System - Enhanced Styles */
+
+:root {
+    --primary-color: #8b7355;
+    --secondary-color: #a0826d;
+    --success-color: #6b8e23;
+    --danger-color: #cd5c5c;
+    --warning-color: #daa520;
+    --info-color: #4682b4;
+    --light-color: #f5f5dc;
+    --dark-color: #3e2723;
+    --beige-light: #f5f5dc;
+    --beige-medium: #d4a574;
+    --beige-dark: #8b7355;
+    --brown-light: #a0826d;
+    --brown-medium: #8b7355;
+    --brown-dark: #5d4e37;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--beige-medium) 0%, var(--beige-dark) 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: var(--dark-color); /* Dark brown text for contrast */
+}
+
+/* Navigation */
+.navbar {
+    background: linear-gradient(135deg, var(--brown-medium), var(--brown-dark)) !important;
+    border-bottom: 1px solid var(--brown-light);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--beige-light) !important;
+}
+
+.navbar-nav .nav-link {
+    color: var(--beige-light) !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--beige-medium) !important;
+}
+
+.navbar-toggler {
+    border-color: var(--beige-light) !important;
+}
+
+.navbar-toggler-icon {
+    background-color: var(--beige-light) !important;
+}
+
+/* Ensure navbar text is visible */
+.navbar .btn-primary {
+    color: var(--beige-light) !important;
+    border: 1px solid var(--beige-light) !important;
+}
+
+.navbar .btn-primary:hover {
+    background-color: var(--brown-light) !important;
+    color: var(--brown-dark) !important;
+}
+
+/* Text Colors */
+h1, h2, h3, h4, h5, h6 {
+    color: #3e2723 !important;
+}
+
+p, span, div {
+    color: #3e2723 !important;
+}
+
+/* Welcome Section specific fixes */
+#welcomeSection .card {
+    background: rgba(245, 245, 220, 0.95) !important;
+    color: #3e2723 !important;
+    border: 1px solid #d4a574;
+}
+
+#welcomeSection h1 {
+    color: #3e2723 !important;
+}
+
+#welcomeSection p {
+    color: #5d4e37 !important;
+}
+
+#welcomeSection h5 {
+    color: #3e2723 !important;
+}
+
+/* Cards */
+.card {
+    border: 1px solid #d4a574;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+    color: #3e2723; /* Ensure card text is dark brown */
+    background: rgba(245, 245, 220, 0.95);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--brown-medium), var(--brown-dark));
+    color: var(--beige-light);
+    font-weight: 700;
+    border: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Dashboard Stats */
+.card.bg-info {
+    background: linear-gradient(135deg, var(--info-color), var(--brown-light)) !important;
+    color: var(--beige-light) !important;
+}
+
+.card.bg-warning {
+    background: linear-gradient(135deg, var(--warning-color), var(--brown-medium)) !important;
+    color: var(--beige-light) !important;
+}
+
+.card.bg-success {
+    background: linear-gradient(135deg, var(--success-color), var(--brown-light)) !important;
+    color: var(--beige-light) !important;
+}
+
+.card.bg-danger {
+    background: linear-gradient(135deg, var(--danger-color), var(--brown-dark)) !important;
+    color: var(--beige-light) !important;
+}
+
+/* Forms */
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+select {
+    border: 2px solid var(--brown-light);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    background-color: var(--beige-light);
+    color: var(--dark-color);
+}
+
+.form-control:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--brown-medium);
+    box-shadow: 0 0 0 0.2rem rgba(139, 115, 85, 0.25);
+    background-color: var(--beige-light);
+    color: var(--dark-color);
+}
+
+/* Form labels */
+.form-label {
+    color: var(--beige-light) !important;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Form text enhancement */
+.form-control::placeholder {
+    color: var(--beige-medium) !important;
+}
+
+.form-control {
+    color: var(--beige-light) !important;
+    background-color: rgba(139, 115, 85, 0.2) !important;
+    border: 1px solid var(--beige-medium) !important;
+}
+
+.form-control:focus {
+    border-color: var(--beige-light) !important;
+    box-shadow: 0 0 0 0.2rem rgba(245, 245, 220, 0.25) !important;
+    color: var(--beige-light) !important;
+}
+
+select.form-control option {
+    color: var(--brown-dark) !important;
+    background-color: var(--beige-light) !important;
+}
+
+/* Small text for form hints */
+.form-text {
+    color: var(--beige-medium) !important;
+}
+
+/* Checkbox labels */
+.form-check-label {
+    color: var(--beige-light) !important;
+    font-weight: 600;
+}
+
+
+.btn {
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--brown-dark));
+    border: 1px solid var(--brown-medium);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color), var(--brown-light));
+    border: 1px solid var(--brown-medium);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning-color), var(--brown-medium));
+    border: 1px solid var(--brown-dark);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color), var(--brown-dark));
+    border: 1px solid var(--brown-medium);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, var(--brown-light), var(--brown-medium));
+    border: 1px solid var(--brown-dark);
+}
+
+/* Tables */
+.table {
+    background: var(--beige-light);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--brown-light);
+}
+
+.table thead th {
+    background: linear-gradient(135deg, var(--brown-light), var(--brown-medium));
+    border: none;
+    font-weight: 600;
+    color: var(--beige-light);
+}
+
+.table tbody td {
+    color: var(--brown-medium) !important;
+    font-weight: 500;
+}
+
+.table tbody tr:hover td {
+    color: var(--brown-dark) !important;
+}
+
+.table tbody tr {
+    transition: var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: var(--beige-medium);
+    transform: scale(1.01);
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    color: var(--beige-light) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--brown-medium) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+/* Progress Bars */
+.progress {
+    border-radius: 10px;
+    background-color: var(--beige-medium);
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+    border-radius: 10px;
+}
+
+.progress-bar.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.progress-bar.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.progress-bar.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+/* Priority Queue */
+.border-left {
+    border-left-width: 5px !important;
+}
+
+/* Freshness Detection */
+#imagePreview img {
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+#freshnessResult .rounded-circle {
+    box-shadow: var(--box-shadow);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Risk Heatmap */
+.risk-grid-item {
+    transition: var(--transition);
+}
+
+.risk-grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Charts */
+canvas {
+    max-height: 300px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Welcome Section */
+#welcomeSection {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#welcomeSection .card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#welcomeSection .fa-snowflake {
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Modal */
+.modal-content {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    color: white;
+    border: none;
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    transition: var(--transition);
+    font-weight: 500;
+    color: var(--beige-light) !important;
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(135deg, var(--brown-medium), var(--brown-dark));
+    color: var(--beige-light);
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: var(--beige-medium);
+    color: var(--brown-dark) !important;
+}
+
+/* Alerts */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(135deg, var(--dark-color), #1a1a1a);
+    margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Loading Spinner */
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+/* Tooltips */
+.tooltip-inner {
+    background-color: var(--dark-color);
+    border-radius: 6px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--beige-medium);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--brown-medium), var(--brown-dark));
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--brown-dark), var(--brown-medium));
+}
+
+/* Print Styles */
+@media print {
+    .navbar, .btn, footer {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    body {
+        background: white;
+    }
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus States */
+.btn:focus, .form-control:focus, .nav-link:focus {
+    outline: 2px solid var(--brown-medium);
+    outline-offset: 2px;
+}
+
+/* Force all tab navigation text to be beige */
+.nav-tabs .nav-link,
+.nav-tabs .nav-link:visited,
+.nav-tabs .nav-link:link {
+    color: var(--beige-light) !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: #2d3748;
+        color: white;
+    }
+    
+    .table {
+        background-color: #2d3748;
+        color: white;
+    }
+    
+    .form-control {
+        background-color: #4a5568;
+        border-color: #4a5568;
+        color: white;
+    }
+}
+
+/* Utility Classes */
+.text-gradient {
+    background: linear-gradient(135deg, var(--brown-medium), var(--brown-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.border-gradient {
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--brown-medium), var(--brown-light)) 1;
+}
+
+/* Refrigerator 3D Layout Styles */
+.fridge-container {
+    perspective: 1500px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 380px;
+    height: 620px;
+}
+
+.fridge-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #2c3539; /* Matte black/grey background */
+    border-radius: 12px;
+    border: 6px solid #4e5d6c;
+    overflow: visible;
+    transform-style: preserve-3d;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+/* Doors */
+.fridge-door {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #708090 0%, #4f5d6c 50%, #2f3d4c 100%); /* Brushed steel metallic texture */
+    border: 2px solid #5a6b7c;
+    box-sizing: border-box;
+    z-index: 10;
+    transform-origin: left center;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 1.2s;
+    box-shadow: inset 2px 2px 10px rgba(255,255,255,0.2), 4px 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+.freezer-door {
+    top: 0;
+    height: 35%;
+    border-bottom: 3px solid #1a242f;
+    border-radius: 6px 6px 0 0;
+}
+
+.fridge-compartment-door {
+    bottom: 0;
+    height: 65%;
+    border-radius: 0 0 6px 6px;
+}
+
+/* Door handles */
+.fridge-door .handle {
+    position: absolute;
+    right: 15px;
+    width: 14px;
+    background: linear-gradient(90deg, #d3d3d3, #a9a9a9, #555555);
+    border-radius: 4px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+.freezer-door .handle {
+    bottom: 15px;
+    height: 60px;
+}
+
+.fridge-compartment-door .handle {
+    top: 15px;
+    height: 120px;
+}
+
+/* Door logo */
+.fridge-logo {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Open Door Class triggers 3D swing */
+.fridge-door.open {
+    transform: rotateY(-130deg);
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.4);
+    z-index: 5;
+}
+
+/* Smart Screen (Family Hub) */
+.smart-screen {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 40px;
+    bottom: 15px;
+    background: #0d1117; /* Cyber black screen */
+    border: 3px solid #1f242c;
+    border-radius: 6px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.9), 0 0 8px rgba(0, 242, 254, 0.2);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.smart-screen * {
+    color: #e6edf3 !important;
+}
+
+.smart-screen .screen-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: bold;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: #00f2fe !important; /* cyan glow */
+    text-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 2px;
+}
+
+.screen-time {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #00f2fe !important;
+}
+
+.screen-notifications {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-size: 0.7rem;
+    padding-top: 4px;
+}
+
+.screen-notifications .alert-item {
+    background: rgba(255,255,255,0.05);
+    border-left: 3px solid #ff007f;
+    padding: 4px 6px;
+    margin-bottom: 4px;
+    border-radius: 0 4px 4px 0;
+    animation: alertSlideIn 0.3s ease;
+}
+
+@keyframes alertSlideIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Refrigerator Interior */
+.fridge-interior {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #f0f8ff 0%, #e6f2ff 100%); /* Cold light blue interior */
+    border-radius: 6px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1; /* behind closed doors */
+    box-sizing: border-box;
+}
+
+/* Interior LED glow */
+.led-light {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(224, 242, 255, 0.8) 0%, rgba(224, 242, 255, 0) 100%);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Compartment shelves */
+.fridge-shelf-container {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+    min-height: 105px;
+    box-sizing: border-box;
+}
+
+.shelf-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #4b6584 !important;
+    opacity: 0.6;
+    letter-spacing: 1px;
+}
+
+.shelf-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 2px 5px 8px 5px;
+    justify-content: center;
+    align-items: flex-end;
+    overflow-x: hidden;
+    overflow-y: visible;
+    z-index: 2;
+    max-height: 85px;
+    min-height: 50px;
+}
+
+.shelf-glass {
+    height: 8px;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(135,206,250,0.5) 50%, rgba(70,130,180,0.6) 100%);
+    border-radius: 4px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.15);
+    border-top: 1px solid rgba(255,255,255,0.9);
+}
+
+.shelf-glass-drawer {
+    height: 60px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(135, 206, 250, 0.6);
+    border-radius: 8px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.1), 0 3px 5px rgba(0,0,0,0.1);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Drawer shelf item override */
+.fridge-shelf-container[data-location="Drawer"] .shelf-items {
+    z-index: 3;
+    padding-bottom: 12px;
+}
+
+/* Styled Food Item inside Fridge */
+.fridge-item-pill {
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fridge-item-pill * {
+    color: #3e2723 !important;
+}
+
+.fridge-item-pill:hover {
+    transform: translateY(-4px) scale(1.1);
+    z-index: 10;
+}
+
+/* Glowing Halos for Shelf Items */
+.fridge-item-pill.fresh {
+    border: 1.5px solid #28a745;
+    box-shadow: 0 0 6px rgba(40, 167, 69, 0.4);
+}
+
+.fridge-item-pill.warning {
+    border: 1.5px solid #ffa500;
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.5);
+}
+
+.fridge-item-pill.danger {
+    border: 1.5px solid #dc3545;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+    animation: expiredPulse 1.5s infinite alternate;
+}
+
+@keyframes expiredPulse {
+    0% { box-shadow: 0 0 4px rgba(220, 53, 69, 0.4); }
+    100% { box-shadow: 0 0 12px rgba(220, 53, 69, 0.8); }
+}
+
+.close-interior-btn {
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Flying Animation element styles */
+.flying-food-particle {
+    position: fixed;
+    z-index: 9999;
+    padding: 8px 12px;
+    background: var(--beige-light);
+    border-radius: 12px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-weight: bold;
+    pointer-events: none;
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.flying-food-particle * {
+    color: var(--dark-color) !important;
+}
+
+/* Adjust tab active styles to fit Outfit font */
+body, h1, h2, h3, h4, h5, h6, .btn, .navbar-brand, .form-control {
+    font-family: 'Outfit', sans-serif !important;
+}
