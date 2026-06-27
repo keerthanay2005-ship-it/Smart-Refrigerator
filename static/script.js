@@ -163,7 +163,20 @@ function showDashboard() {
     document.getElementById('welcomeSection').classList.add('d-none');
     document.getElementById('loginBtn').classList.add('d-none');
     document.getElementById('logoutBtn').classList.remove('d-none');
-    
+
+    // Register tab event listeners once, here, so they always work
+    // regardless of which backend (Supabase or Flask) is active
+    const analyticsTab = document.querySelector('[href="#analytics"]');
+    const heatmapTab = document.querySelector('[href="#heatmap"]');
+    if (analyticsTab && !analyticsTab._listenerAdded) {
+        analyticsTab.addEventListener('shown.bs.tab', () => { loadAnalytics(); });
+        analyticsTab._listenerAdded = true;
+    }
+    if (heatmapTab && !heatmapTab._listenerAdded) {
+        heatmapTab.addEventListener('shown.bs.tab', () => { loadRiskHeatmap(); });
+        heatmapTab._listenerAdded = true;
+    }
+
     loadDashboard();
     loadInventory();
 }
@@ -214,15 +227,7 @@ function loadDashboardOriginal() {
         // Load priority queue
         loadPriorityQueue(data.items);
         
-        // Load analytics when tab is shown
-        document.querySelector('[href="#analytics"]').addEventListener('shown.bs.tab', () => {
-            loadAnalytics();
-        });
-        
-        // Load heatmap when tab is shown
-        document.querySelector('[href="#heatmap"]').addEventListener('shown.bs.tab', () => {
-            loadRiskHeatmap();
-        });
+        // Tab listeners already registered in showDashboard() — no duplicates needed here
     })
     .catch(error => {
         console.error('Dashboard error:', error);
@@ -1015,6 +1020,24 @@ function displaySustainabilityScore(score, wasteRate) {
 
 // Risk Heatmap
 function loadRiskHeatmap() {
+    // If Supabase is active, build heatmap from local inventoryData
+    // (Flask /risk-heatmap requires a Flask session which Supabase users don't have)
+    if (SupabaseAdapter.isEnabled()) {
+        SupabaseAdapter.getItems()
+        .then(items => {
+            const riskGrid = buildRiskGridFromItems(items);
+            displayRiskHeatmap(riskGrid);
+        })
+        .catch(err => {
+            console.error('Heatmap Supabase error:', err);
+            // Fall back to locally cached inventory
+            const riskGrid = buildRiskGridFromItems(inventoryData);
+            displayRiskHeatmap(riskGrid.length ? riskGrid : getMockHeatmapData().risk_grid);
+        });
+        return;
+    }
+
+    // Flask path
     fetch('/risk-heatmap')
     .then(response => response.json())
     .then(data => {
@@ -1025,9 +1048,44 @@ function loadRiskHeatmap() {
     })
     .catch(error => {
         console.error('Heatmap error:', error);
-        const data = getMockHeatmapData();
-        displayRiskHeatmap(data.risk_grid);
+        const riskGrid = buildRiskGridFromItems(inventoryData);
+        displayRiskHeatmap(riskGrid.length ? riskGrid : getMockHeatmapData().risk_grid);
     });
+}
+
+// Build risk grid from an array of inventory items (client-side calculation)
+function buildRiskGridFromItems(items) {
+    const categories = ['Fruits', 'Vegetables', 'Dairy', 'Packaged', 'Meat', 'Other'];
+    const riskGrid = [];
+
+    categories.forEach(cat => {
+        const catItems = items.filter(i => (i.category || '') === cat);
+        if (catItems.length === 0) return;
+
+        const avgScore = catItems.reduce((sum, i) => {
+            const d = i.days_left !== undefined ? i.days_left : calculateDaysLeft(i.expiry || i.expiry_date);
+            if (d < 0) return sum + 100;
+            if (d <= 3) return sum + 80;
+            if (d <= 7) return sum + 60;
+            if (d <= 14) return sum + 40;
+            return sum + 20;
+        }, 0) / catItems.length;
+
+        let riskLevel = 'Low', color = '#90EE90';
+        if (avgScore >= 80) { riskLevel = 'High'; color = '#FF0000'; }
+        else if (avgScore >= 60) { riskLevel = 'Medium'; color = '#FFA500'; }
+        else if (avgScore >= 40) { riskLevel = 'Medium'; color = '#FFD700'; }
+
+        riskGrid.push({
+            category: cat,
+            risk_level: riskLevel,
+            risk_score: avgScore,
+            item_count: catItems.length,
+            color: color
+        });
+    });
+
+    return riskGrid;
 }
 
 function getMockHeatmapData() {

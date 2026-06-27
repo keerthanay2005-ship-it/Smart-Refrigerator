@@ -273,7 +273,8 @@ p, span, div {
 }
 
 .table thead th {
-    background: transparent;
+    background: transparent !important;
+    box-shadow: none !important;
     color: var(--text-secondary);
     border: none;
     font-weight: 600;
@@ -295,6 +296,8 @@ p, span, div {
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary) !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
 .table tbody tr td:first-child {
