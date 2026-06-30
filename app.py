@@ -295,8 +295,8 @@ if DB_BACKEND == 'mongodb':
     app.config["MONGO_URI"] = os.getenv("MONGO_URI", "mongodb://localhost:27017/smartfridge")
     mongo = PyMongo(app)
 
-# SQLite database path
-SQLITE_DB = 'smart_fridge.db'
+# SQLite database path — configurable via env var for Docker volume support
+SQLITE_DB = os.getenv('SQLITE_DB_PATH', 'smart_fridge.db')
 
 # Initialize SQLite database schema if file is empty/missing
 def init_sqlite_db():
